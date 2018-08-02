@@ -137,19 +137,22 @@ if __name__ == "__main__":
         os.makedirs(results_directory)
 
     exp_params = args
-    if os.path.isfile(os.path.join(results_directory, 'results.p')):
-        with open(os.path.join(results_directory, 'results.p'), mode='rb') as results_file:
-            experiment_results = pickle.load(results_file)
-    else:
-        experiment_results = []
 
+    run_results = []
     for i in range(args.runs):
         print("Training agent", str(i+1) + "...")
         experiment = Experiment(experiment_parameters=args)
         if i == 0:
             experiment.agent.save_parameters(results_directory)
         agent_results = experiment.run_experiment()
-        experiment_results.append(agent_results)
+        run_results.append(agent_results)
+
+    if os.path.isfile(os.path.join(results_directory, 'results.p')):
+        with open(os.path.join(results_directory, 'results.p'), mode='rb') as results_file:
+            experiment_results = pickle.load(results_file)
+    else:
+        experiment_results = []
+    experiment_results.extend(run_results)
 
     sample_size = len(experiment_results)
     aggregated_average = np.average(np.array(experiment_results))
