@@ -170,6 +170,7 @@ if __name__ == "__main__":
         pickle.dump(experiment_results, results_file)
 
     print("##########  Summary ##########")
+    print("The name of the algorithm is:", args.name)
     print('The sample size is:', sample_size)
     print("The aggregated average is:", np.round(aggregated_average, 4))
     print("The aggregated standard error is:", aggregated_ste)
