@@ -40,6 +40,7 @@ class ExperimentAgent():
         self.config.tiling_side_length = 8
         self.config.num_dims = 2
         self.config.alpha = self.alpha
+        self.config.state_space_range = np.array([0.5+1.2, 0.07+0.07], dtype=np.float64)
 
         " Policies Parameters "
         self.config.target_policy = Config()
@@ -107,9 +108,9 @@ class Experiment:
         while self.agent.get_episode_number() < NUMBER_OF_EPISODES:
             episode_number += 1
             self.agent.train()
-            # print('Episode number:', episode_number)
-            # print('Average return:', np.average(self.agent.get_train_data()))
-            # print('Average number of steps:', np.average(self.agent.get_number_of_steps()))
+            print('Episode number:', episode_number)
+            print('Average return:', np.average(self.agent.get_train_data()))
+            print('Average number of steps:', np.average(self.agent.get_number_of_steps()))
 
         print("The average return was:", np.average(self.agent.get_train_data()))
         return self.agent.get_train_data()

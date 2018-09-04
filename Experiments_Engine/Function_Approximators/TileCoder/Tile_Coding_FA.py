@@ -20,13 +20,16 @@ class TileCoderFA(FunctionApproximatorBase):
         num_actions             int             3                   Number of actions
         num_dims                int             2                   Number of dimensions
         alpha                   float           0.1                 Learning rate
+        state_space_range       np.array        [1,1]               The range of the state space
         """
         self.num_tilings = check_attribute_else_default(config, 'num_tilings', 32)
         self.tiling_side_length = check_attribute_else_default(config, 'tiling_side_length', 8)
         self.num_actions = check_attribute_else_default(config, 'num_actions', 3)
         self.num_dims = check_attribute_else_default(config, 'num_dims', 2)
         self.alpha = check_attribute_else_default(config, 'alpha', 0.1)
+        self.state_space_range = check_attribute_else_default(config, 'state_space_range', np.ones(self.num_dims))
 
+        self.scale_factor = self.tiling_side_length * (1 / self.state_space_range)
         self.tiles_per_tiling = self.tiling_side_length ** self.num_dims
         self.num_tiles = (self.num_tilings * self.tiles_per_tiling)
         self.theta = 0.001 * random(self.num_tiles * self.num_actions)
@@ -36,7 +39,8 @@ class TileCoderFA(FunctionApproximatorBase):
     def update(self, state, action, nstep_return):
         current_estimate = self.get_value(state, action)
         value = nstep_return - current_estimate
-        scaled_state = np.multiply(np.asarray(state).flatten(), self.tiling_side_length)
+        scaled_state = np.multiply(np.asarray(state).flatten(), self.scale_factor)
+
         tile_indices = asarray(
             tiles(self.iht, self.num_tilings, scaled_state),
             dtype=int) + (action * self.num_tiles)
@@ -44,7 +48,7 @@ class TileCoderFA(FunctionApproximatorBase):
 
     """ Return the value of a specific state-action pair """
     def get_value(self, state, action):
-        scaled_state = np.multiply(np.asarray(state).flatten(), self.tiling_side_length)
+        scaled_state = np.multiply(np.asarray(state).flatten(), self.scale_factor)
 
         tile_indices = asarray(
             tiles(self.iht, self.num_tilings, scaled_state),
@@ -54,7 +58,7 @@ class TileCoderFA(FunctionApproximatorBase):
 
     """ Returns all the action values of the current state """
     def get_next_states_values(self, state):
-        scaled_state = np.multiply(np.asarray(state).flatten(), self.tiling_side_length)
+        scaled_state = np.multiply(np.asarray(state).flatten(), self.scale_factor)
 
         values = np.zeros(self.num_actions)
         for action in range(self.num_actions):
