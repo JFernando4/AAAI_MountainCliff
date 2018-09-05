@@ -108,9 +108,9 @@ class Experiment:
         while self.agent.get_episode_number() < NUMBER_OF_EPISODES:
             episode_number += 1
             self.agent.train()
-            print('Episode number:', episode_number)
-            print('Average return:', np.average(self.agent.get_train_data()))
-            print('Average number of steps:', np.average(self.agent.get_number_of_steps()))
+            # print('Episode number:', episode_number)
+            # print('Average return:', np.average(self.agent.get_train_data()))
+            # print('Average number of steps:', np.average(self.agent.get_number_of_steps()))
 
         print("The average return was:", np.average(self.agent.get_train_data()))
         return self.agent.get_train_data()
