@@ -112,7 +112,7 @@ class Experiment:
             # print('Average return:', np.average(self.agent.get_train_data()))
             # print('Average number of steps:', np.average(self.agent.get_number_of_steps()))
 
-        print("The average return was:", np.average(self.agent.get_train_data()))
+        # print("The average return was:", np.average(self.agent.get_train_data()))
         return self.agent.get_train_data()
 
 
