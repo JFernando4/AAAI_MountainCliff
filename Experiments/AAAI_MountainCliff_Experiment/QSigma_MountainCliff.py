@@ -13,7 +13,6 @@ from Experiments_Engine.Plots_and_Summaries import compute_tdist_confidence_inte
 
 NUMBER_OF_EPISODES = 500
 NUMBER_OF_AGENTS = 500
-NUMBER_OF_TILINGS = 32
 
 
 class ExperimentAgent():
@@ -23,7 +22,8 @@ class ExperimentAgent():
         self.n = args.n
         self.sigma = args.sigma
         self.beta = args.beta
-        self.alpha = np.float64(args.alpha) / NUMBER_OF_TILINGS
+        self.number_of_tilings = args.tilings
+        self.alpha = np.float64(args.alpha) / self.number_of_tilings
 
         """ Experiment Configuration """
         self.config = Config()
@@ -36,7 +36,7 @@ class ExperimentAgent():
         self.config.obs_dims = [2]      # Dimensions of the observations experienced by the agent
 
         " TileCoder Parameters "
-        self.config.num_tilings = NUMBER_OF_TILINGS
+        self.config.num_tilings = self.number_of_tilings
         self.config.tiling_side_length = 8
         self.config.num_dims = 2
         self.config.alpha = self.alpha
@@ -108,11 +108,9 @@ class Experiment:
         while self.agent.get_episode_number() < NUMBER_OF_EPISODES:
             episode_number += 1
             self.agent.train()
-            # print('Episode number:', episode_number)
-            # print('Average return:', np.average(self.agent.get_train_data()))
-            # print('Average number of steps:', np.average(self.agent.get_number_of_steps()))
-
-        # print("The average return was:", np.average(self.agent.get_train_data()))
+            # print("Training episode " + str(episode_number) + "...")
+            # print("The return this episode was:", self.agent.get_train_data()[-1])
+            # print("The total average return is:", np.average(self.agent.get_train_data()))
         return self.agent.get_train_data()
 
 
@@ -120,6 +118,7 @@ if __name__ == "__main__":
     """ Experiment Parameters """
     parser = argparse.ArgumentParser()
     parser.add_argument('-n', action='store', default=1, type=np.uint8)
+    parser.add_argument('-tilings', action='store', default=32, type=np.uint16)
     parser.add_argument('-sigma', action='store', default=0.5, type=np.float64)
     parser.add_argument('-beta', action='store', default=1, type=np.float64)
     parser.add_argument('-alpha', action='store', default=1, type=Fraction)
